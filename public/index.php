@@ -23,22 +23,23 @@ define('WEB_URL', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'));
     /**
      * Get config service for use in inline setup below
      */
-    $config = include APP_PATH . "/config/config.php";;
+    $config = include APP_PATH . "/config/config.php";
 
     /**
      * Include Autoloader
      */
     include APP_PATH . '/config/loader.php';
 
-    /**
-     * Handle routes
-     */
-    include APP_PATH . '/config/router.php';
     
     /**
      * Read services
      */
     include APP_PATH . '/config/services.php';
+
+    /**
+     * Handle routes
+     */
+    include APP_PATH . '/config/router.php';
     
     /**
      * Handle the request

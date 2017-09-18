@@ -25,7 +25,7 @@
     </br>
     <div class='row'>
         <div class='col-md-10 col-md-offset-1'>
-            {% if page.items|length > 0 %}
+            {% if page.items is defined and page.items|length > 0 %}
                 <table class='table'>
                     <thead>
                         <tr>
@@ -43,7 +43,7 @@
                     </thead>
                     <tbody>
                         {% for news in page.items %}
-                        <tr class='clickable-row' data-href='/index/postDetails?id={{ new.id }}'>
+                        <tr class='clickable-row' data-href='/news/postDetails/{{ news.id }}'>
                             <td>{{ news.title }}</td>
                             <td>{{ news.users.name }} {{ news.users.lastName }}</td>
                             <td>{{ news.created_at }}</td>

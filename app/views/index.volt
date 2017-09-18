@@ -23,19 +23,19 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 {% if (session.has('user')) %}
                 <ul class='nav navbar-nav'>
-                    <li> {{ linkTo('index/addPost', 'New Post') }} </li>
-                    <li> {{ linkTo('index/myPosts', 'My Posts') }} </li>
+                    <li> {{ linkTo('/myNews/addPost', 'New Post') }} </li>
+                    <li> {{ linkTo('/myNews', 'My Posts') }} </li>
                 
                 </ul>
                 <ul class='nav navbar-nav navbar-right'>
                     {% set user = session.get('user') %}
                     <li class='navbar-text'>{{user['name']}} {{user['lastName']}}</li>
-                    <li> {{ linkTo('account/logout', 'Logout') }} </li>
+                    <li> {{ linkTo('/account/logout', 'Logout') }} </li>
                 </ul>
                 {% else %}
                 <ul class='nav navbar-nav navbar-right'>                
-                    <li> {{ linkTo('account/register', 'Register') }} </li>
-                    <li> {{ linkTo('account/login', 'Login') }} </li>
+                    <li> {{ linkTo('/account/register', 'Register') }} </li>
+                    <li> {{ linkTo('/account/login', 'Login') }} </li>
                 </ul>
                 {% endif %}
             </div>
@@ -46,7 +46,7 @@
     </div>
     {{ javascriptInclude('https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', false) }}
     {{ javascriptInclude('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', false) }}
-    {{ javascriptInclude('js/site.js') }}
-    {{ javascriptInclude('js/modals.js') }}
+    {{ javascriptInclude('/js/site.js') }}
+    {{ javascriptInclude('/js/modals.js') }}
 </body>
 </html>

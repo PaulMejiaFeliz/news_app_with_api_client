@@ -2,10 +2,14 @@
 
 $router = $di->getRouter();
 
-// Define your routes here
-$router->addGet('/', [
-    'Newsapp\Controllers\IndexController',
-    'Index'
-]);
+// $router->add('/', [
+//     'controller' => 'Index',
+//     'action' => 'Index'
+// ]);
+
+// $router->add('/account/login', [
+//     'controller' => 'Account',
+//     'action' => 'login'
+// ]);
 
 $router->handle();

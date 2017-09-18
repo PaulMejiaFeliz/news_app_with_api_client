@@ -43,7 +43,7 @@
                     </thead>
                     <tbody>
                         <?php foreach ($page->items as $news) { ?>
-                        <tr class='clickable-row' data-href='/index/postDetails?id=<?= $new->id ?>'>
+                        <tr class='clickable-row' data-href='/news/postDetails/<?= $news->id ?>'>
                             <td><?= $news->title ?></td>
                             <td><?= $news->users->name ?> <?= $news->users->lastName ?></td>
                             <td><?= $news->created_at ?></td>

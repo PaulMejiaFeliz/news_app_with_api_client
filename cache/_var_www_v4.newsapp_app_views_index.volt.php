@@ -23,19 +23,19 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <?php if (($this->session->has('user'))) { ?>
                 <ul class='nav navbar-nav'>
-                    <li> <?= $this->tag->linkto('index/addPost', 'New Post') ?> </li>
-                    <li> <?= $this->tag->linkto('index/myPosts', 'My Posts') ?> </li>
+                    <li> <?= $this->tag->linkto('/myNews/addPost', 'New Post') ?> </li>
+                    <li> <?= $this->tag->linkto('/myNews', 'My Posts') ?> </li>
                 
                 </ul>
                 <ul class='nav navbar-nav navbar-right'>
                     <?php $user = $this->session->get('user'); ?>
                     <li class='navbar-text'><?= $user['name'] ?> <?= $user['lastName'] ?></li>
-                    <li> <?= $this->tag->linkto('account/logout', 'Logout') ?> </li>
+                    <li> <?= $this->tag->linkto('/account/logout', 'Logout') ?> </li>
                 </ul>
                 <?php } else { ?>
                 <ul class='nav navbar-nav navbar-right'>                
-                    <li> <?= $this->tag->linkto('account/register', 'Register') ?> </li>
-                    <li> <?= $this->tag->linkto('account/login', 'Login') ?> </li>
+                    <li> <?= $this->tag->linkto('/account/register', 'Register') ?> </li>
+                    <li> <?= $this->tag->linkto('/account/login', 'Login') ?> </li>
                 </ul>
                 <?php } ?>
             </div>
@@ -46,7 +46,7 @@
     </div>
     <?= $this->tag->javascriptinclude('https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', false) ?>
     <?= $this->tag->javascriptinclude('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', false) ?>
-    <?= $this->tag->javascriptinclude('js/site.js') ?>
-    <?= $this->tag->javascriptinclude('js/modals.js') ?>
+    <?= $this->tag->javascriptinclude('/js/site.js') ?>
+    <?= $this->tag->javascriptinclude('/js/modals.js') ?>
 </body>
 </html>
