@@ -14,7 +14,7 @@
                 <?php } ?>
             </ul>
         </div>
-        <?= $this->tag->form('/account/register') ?>
+        <?= $this->tag->form('/register') ?>
             <div class='form-group input-group'>
                 <span class='input-group-addon'>Name</span>
                 <input class='form-control' type='text' name='name' maxlength='100' required value='<?= $name ?>'>

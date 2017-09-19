@@ -1,5 +1,7 @@
 <?php
 
+use Phalcon\Tag;
+
 class NewsController extends ControllerBase
 {
     /**
@@ -26,6 +28,8 @@ class NewsController extends ControllerBase
 
     public function indexAction()
     {
+        Tag::prependTitle('Home');        
+
         $url = 'news/';
         
         $queryString = '?';
@@ -79,18 +83,19 @@ class NewsController extends ControllerBase
     {
         $url = "news/{$id}";
         $url .= '?page=' . $this->request->getQuery('page', 'int', 1);
-
+        
         $response = $this->client->request('GET', $url);
         if ($response->getStatusCode() == 200) {
-            $this->view->post = json_decode($response->getBody());
-        }
+            $post = json_decode($response->getBody());
+            $this->view->post = $post;
+            Tag::prependTitle($post->title);
+            $url = "news/{$id}/comments";
+            $url .= '?page=' . $this->request->getQuery('page', 'int', 1);
 
-        $url = "news/{$id}/comments";
-        $url .= '?page=' . $this->request->getQuery('page', 'int', 1);
-
-        $response = $this->client->request('GET', $url);
-        if ($response->getStatusCode() == 200) {
-            $this->view->page = json_decode($response->getBody());
+            $response = $this->client->request('GET', $url);
+            if ($response->getStatusCode() == 200) {
+                $this->view->page = json_decode($response->getBody());
+            }
         }
     }
 }

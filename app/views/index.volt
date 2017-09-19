@@ -23,19 +23,19 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 {% if (session.has('user')) %}
                 <ul class='nav navbar-nav'>
-                    <li> {{ linkTo('/myNews/addPost', 'New Post') }} </li>
+                    <li> {{ linkTo('/news/add', 'New Post') }} </li>
                     <li> {{ linkTo('/myNews', 'My Posts') }} </li>
                 
                 </ul>
                 <ul class='nav navbar-nav navbar-right'>
                     {% set user = session.get('user') %}
                     <li class='navbar-text'>{{user['name']}} {{user['lastName']}}</li>
-                    <li> {{ linkTo('/account/logout', 'Logout') }} </li>
+                    <li> {{ linkTo('/logout', 'Logout') }} </li>
                 </ul>
                 {% else %}
                 <ul class='nav navbar-nav navbar-right'>                
-                    <li> {{ linkTo('/account/register', 'Register') }} </li>
-                    <li> {{ linkTo('/account/login', 'Login') }} </li>
+                    <li> {{ linkTo('/register', 'Register') }} </li>
+                    <li> {{ linkTo('/login', 'Login') }} </li>
                 </ul>
                 {% endif %}
             </div>

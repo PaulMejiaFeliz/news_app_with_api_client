@@ -23,19 +23,19 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <?php if (($this->session->has('user'))) { ?>
                 <ul class='nav navbar-nav'>
-                    <li> <?= $this->tag->linkto('/myNews/addPost', 'New Post') ?> </li>
+                    <li> <?= $this->tag->linkto('/news/add', 'New Post') ?> </li>
                     <li> <?= $this->tag->linkto('/myNews', 'My Posts') ?> </li>
                 
                 </ul>
                 <ul class='nav navbar-nav navbar-right'>
                     <?php $user = $this->session->get('user'); ?>
                     <li class='navbar-text'><?= $user['name'] ?> <?= $user['lastName'] ?></li>
-                    <li> <?= $this->tag->linkto('/account/logout', 'Logout') ?> </li>
+                    <li> <?= $this->tag->linkto('/logout', 'Logout') ?> </li>
                 </ul>
                 <?php } else { ?>
                 <ul class='nav navbar-nav navbar-right'>                
-                    <li> <?= $this->tag->linkto('/account/register', 'Register') ?> </li>
-                    <li> <?= $this->tag->linkto('/account/login', 'Login') ?> </li>
+                    <li> <?= $this->tag->linkto('/register', 'Register') ?> </li>
+                    <li> <?= $this->tag->linkto('/login', 'Login') ?> </li>
                 </ul>
                 <?php } ?>
             </div>

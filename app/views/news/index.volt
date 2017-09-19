@@ -43,7 +43,7 @@
                     </thead>
                     <tbody>
                         {% for news in page.items %}
-                        <tr class='clickable-row' data-href='/news/postDetails/{{ news.id }}'>
+                        <tr class='clickable-row' data-href='/news/detail/{{ news.id }}'>
                             <td>{{ news.title }}</td>
                             <td>{{ news.users.name }} {{ news.users.lastName }}</td>
                             <td>{{ news.created_at }}</td>

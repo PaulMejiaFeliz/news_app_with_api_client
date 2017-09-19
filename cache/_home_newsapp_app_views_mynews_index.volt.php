@@ -4,7 +4,7 @@
     </div>
     <div class='row'>
         <div class='col-md-10 col-md-offset-1'>
-            <form action='/index/myPosts' method='get' class='form-inline'>
+            <form action='/myNews' method='get' class='form-inline'>
                 <div class='form-group input-group'>
                     <span class='input-group-addon'>Search By</span>
                     <select name='search' class='form-control' required >
@@ -18,7 +18,7 @@
                     <input class='form-control' type='text' name='value' required value='<?= $searchValue ?>'>
                 </div>
                 <input class='btn btn-primary' type='submit' value='Search'/>
-                <a class='btn btn-default' href='/index/myPosts'>Clear</a>
+                <a class='btn btn-default' href='/myNews'>Clear</a>
             </form>
         </div>
     </div>
@@ -44,13 +44,13 @@
                     </thead>
                     <tbody>
                         <?php foreach ($page->items as $news) { ?>
-                        <tr class='clickable-row' data-href='/index/postDetails?id=<?= $news->id ?>'>
-                        <td><?= $news->title ?></td>
-                        <td><?= $news->users->name . ' ' . $news->users->lastName ?></td>
-                        <td><?= $news->created_at ?></td>
-                        <td><?= $news->views ?></td>
+                        <tr class='clickable-row' data-href='/news/detail/<?= $news->id ?>'>
+                            <td><?= $news->title ?></td>
+                            <td><?= $news->users->name . ' ' . $news->users->lastName ?></td>
+                            <td><?= $news->created_at ?></td>
+                            <td><?= $news->views ?></td>
                             <td class='action-cell'>
-                                <a class='btn btn-xs btn-warning' href='/index/editPost?id=<?= $news->id ?>'>Edit Post</a>
+                                <a class='btn btn-xs btn-warning' href='/news/edit/<?= $news->id ?>'>Edit Post</a>
                                 <button onClick='fillFormDeletePost(<?= $news->id ?>);' type='button' class='btn btn-xs btn-danger' data-toggle='modal' data-target='#deletePostModal'>Delete Post</button>
                             </td>
                         </tr>
@@ -86,7 +86,7 @@
             </div>
             <div class='modal-footer'>
                 <div class='row'>
-                    <form action='/index/deletePost' method='post'>
+                    <form action='/news/delete' method='post'>
                         <input name='_method' type='hidden' value='delete'>
                         <input id='deletePostFormPostId' name='PostId' type='hidden'/>
                         <div class='col col-md-5'>

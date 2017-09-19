@@ -19,6 +19,8 @@ class AccountController extends ControllerBase
      */
     public function loginAction()
     {
+        Tag::prependTitle('Login');
+        
         $email = '';
         if ($this->request->isPost()) {
             $email = $this->request->getPost('email');
@@ -35,7 +37,6 @@ class AccountController extends ControllerBase
 
                 if ($response->getStatusCode() == 200) {
                     $user = json_decode($response->getBody());
-
                     $this->session->set(
                         'user',
                         [
@@ -65,6 +66,8 @@ class AccountController extends ControllerBase
      */
     public function registerAction()
     {
+        Tag::prependTitle('Register');
+        
         $name = '';
         $lastName = '';
         $email = '';
@@ -74,41 +77,40 @@ class AccountController extends ControllerBase
             $email = $this->request->getPost('email');
             $password = $this->request->getPost('password');
             if ($password !== $this->request->getPost('confirmPassword')) {
-                $this->view->errors = [[
-                    'field' => 'confirm_password',
-                    'message' => "the passwords don't match."
-                ]];
-                return;
-            }
-
-            $request = new Request('POST', 'account/register');
-            try {
-                $response = $this->client->send($request, [
-                    'form_params' => [
-                        'name' => $name,
-                        'lastName' => $lastName,
-                        'email' => $email,
-                        'password' => $password
-                    ]
-                ]);
-
-                if ($response->getStatusCode() == 200) {
-                    $user = json_decode($response->getBody());
-
-                    $this->session->set(
-                        'user',
-                        [
-                            'id' => $user->id,
-                            'name' => $user->name,
-                            'lastName' => $user->lastName,
-                            'email' => $user->email
+                $error = new stdClass();
+                $error->field = 'confirm_password';
+                $error->message = "The confirm password doesn't match.";
+                $this->view->errors = [$error];
+            } else {
+                $request = new Request('POST', 'account/register');
+                try {
+                    
+                    $response = $this->client->send($request, [
+                        'form_params' => [
+                            'email' => $email,
+                            'password' => $password,
+                            'name' => $name,
+                            'lastName' => $lastName
                         ]
-                    );
-                }
+                    ]);
 
-                $this->response->redirect('/');
-            } catch (\Exception $e) {
-                $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
+                    if ($response->getStatusCode() == 200) {
+                        $user = json_decode($response->getBody());
+                        $this->session->set(
+                            'user',
+                            [
+                                'id' => $user->id,
+                                'name' => $user->name,
+                                'lastName' => $user->lastName,
+                                'email' => $user->email
+                            ]
+                        );
+                    }
+
+                    $this->response->redirect('/');
+                } catch (\Exception $e) {
+                    $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
+                }
             }
         }
         $this->view->name = $name;

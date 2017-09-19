@@ -20,7 +20,7 @@
                                 <?php } ?>
                             </p>
                             <?php if (($this->session->has('user') && $this->session->get('user')['id'] === $post->user_id)) { ?>
-                                <a class='btn btn-xs btn-warning' href='/myNews/editPost?id=<?= $post->id ?>'>Edit Post</a>
+                                <a class='btn btn-xs btn-warning' href='/news/edit/<?= $post->id ?>'>Edit Post</a>
                                 <button onClick='fillFormDeletePost(<?= $post->id ?>);' type='button' class='btn btn-xs btn-danger' data-toggle='modal' data-target='#deletePostModal'>
                                     Delete Post
                                 </button>
@@ -34,7 +34,7 @@
                 <div class='panel-footer'>
                     <h3>Comments</h3>
                     <?php if (($this->session->has('user'))) { ?>
-                    <form action='/comments/addComment' method='post' class='form-inline'>
+                    <form action='/comments/add/<?= $post->id ?>' method='post' class='form-inline'>
                         <input type='hidden' name='postId' value='<?= $post->id ?>'>
                         <div class='input-group'>
                             <span class='input-group-addon'>New Comment</span>
@@ -58,7 +58,7 @@
                                                     <?= (isset($comment->updated_at) ? $comment->updated_at : $comment->created_at) ?>
                                                 </h5>
                                             </div>
-                                            <?php if (($this->session->has('user') && $comment->userId == $this->session->get('user')['id'])) { ?>
+                                            <?php if (($this->session->has('user') && $comment->user_id == $this->session->get('user')['id'])) { ?>
                                             <div class='col-md-5 text-right'>
                                                 <div class='col-md-8'>
                                                     <button onClick='fillFormEditComment(<?= $comment->id ?>);' type='button' class='btn btn-sm btn-warning' data-toggle='modal' data-target='#editCommentModal'>Edit</button>
@@ -103,7 +103,7 @@
                 <button type='button' class='close' data-dismiss='modal'>&times;</button>
                 <h4 class='modal-title'>Edit Comment</h4>
             </div>
-            <form action='/comments/editComment' method='post'>
+            <form action='/comments/edit' method='post'>
                 <div class='modal-body'>
                     <div class='row'>
                         <div class='col col-md-10 col-md-offset-1'>
@@ -146,7 +146,7 @@
             </div>
             <div class='modal-footer'>
                 <div class='row'>
-                    <form action='/comments/deleteComment' method='post'>
+                    <form action='/comments/delete' method='post'>
                         <input name='_method' type='hidden' value='delete'>
                         <input id='deleteCommentFormCommentId' name='commentId' type='hidden'/>
                         <div class='col col-md-5'>
@@ -179,7 +179,7 @@
             </div>
             <div class='modal-footer'>
                 <div class='row'>
-                    <form action='/myNews/deletePost' method='post'>
+                    <form action='/news/delete' method='post'>
                         <input name='_method' type='hidden' value='delete'>
                         <input id='deletePostFormPostId' name='PostId' type='hidden'/>
                         <div class='col col-md-5'>

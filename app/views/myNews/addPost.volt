@@ -14,7 +14,7 @@
                 {% endif %}
             </ul>
         </div>
-        <form action='/myNews/addPost' method='post'>
+        <form action='/news/add' method='post' enctype='multipart/form-data'>
             <div class='form-group input-group'>
                 <span class='input-group-addon'>Title</span>
                 <input class='form-control' type='text' name='title'  minlength='5' maxlength='100' required value='{{ title }}'>
@@ -22,6 +22,10 @@
             <div class='form-group input-group'>
                 <span class='input-group-addon'>Content</span>
                 <textarea cols='30' rows='10' class='form-control' type='text' name='content' required>{{ content }}</textarea>
+            </div>
+            <div class='form-group input-group'>
+                <span class='input-group-addon'>Photo</span>
+                <input class='form-control' type='file' name='photo' multiple>
             </div>
             <div class='text-center'>
                 <input type='submit' class='btn btn-primary' value='Post'>

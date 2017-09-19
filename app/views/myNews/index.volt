@@ -44,13 +44,13 @@
                     </thead>
                     <tbody>
                         {% for news in page.items %}
-                        <tr class='clickable-row' data-href='/news/postDetails/{{ news.id }}'>
+                        <tr class='clickable-row' data-href='/news/detail/{{ news.id }}'>
                             <td>{{ news.title }}</td>
                             <td>{{ news.users.name ~ ' ' ~ news.users.lastName }}</td>
                             <td>{{ news.created_at }}</td>
                             <td>{{ news.views }}</td>
                             <td class='action-cell'>
-                                <a class='btn btn-xs btn-warning' href='/myNews/editPost/{{ news.id }}'>Edit Post</a>
+                                <a class='btn btn-xs btn-warning' href='/news/edit/{{ news.id }}'>Edit Post</a>
                                 <button onClick='fillFormDeletePost({{ news.id }});' type='button' class='btn btn-xs btn-danger' data-toggle='modal' data-target='#deletePostModal'>Delete Post</button>
                             </td>
                         </tr>
@@ -86,7 +86,7 @@
             </div>
             <div class='modal-footer'>
                 <div class='row'>
-                    <form action='/myNews/deletePost' method='post'>
+                    <form action='/news/delete' method='post'>
                         <input name='_method' type='hidden' value='delete'>
                         <input id='deletePostFormPostId' name='PostId' type='hidden'/>
                         <div class='col col-md-5'>
