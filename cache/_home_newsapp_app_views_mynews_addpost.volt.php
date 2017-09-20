@@ -25,7 +25,7 @@
             </div>
             <div class="form-group input-group">
                 <span class="input-group-addon">Photo</span>
-                <input class="form-control" type="file" name="photo" multiple accept="image/jpeg,image/png,image/bmp">
+                <input class="form-control" type="file" name="photo" required accept="image/jpeg,image/png,image/bmp">
             </div>
             <div class="text-center">
                 <input type="submit" class="btn btn-primary" value="Post">
