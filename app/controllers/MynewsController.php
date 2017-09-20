@@ -26,6 +26,17 @@ class MynewsController extends ControllerBase
         'views',
         'created_at'
     ];
+
+    /**
+     * Accepted image extensions
+     *
+     * @var array
+     */
+    private $photosExtensions = array(
+        'image/jpeg',
+        'image/png',
+        'image/bmp'
+    );
         
     public function initialize()
     {
@@ -60,20 +71,7 @@ class MynewsController extends ControllerBase
                 $searchField = $field;
                 $searchValue = $value;
             }
-            
         }
-
-        // foreach (array_keys($this->searchFields) as $field) {
-        //     if ($this->request->hasQuery($field)) {
-        //         $value =  $this->request->getQuery($field, 'string');
-                
-        //         $queryString .= $queryString == '?' ? '' : '&';
-        //         $queryString .= "{$field}={$value}";
-
-        //         $searchField = $field;
-        //         $searchValue = $value;
-        //     }
-        // }
 
         $queryString .= $queryString == '?' ? '' : '&';
         $queryString .= 'user_id=' . $this->userData['id'];
@@ -100,21 +98,53 @@ class MynewsController extends ControllerBase
             $content = $this->request->getPost('content');
 
             $request = new Request('POST', 'news');
-            try {
-                $response = $this->client->send($request, [
-                    'form_params' => [
-                        'title' => $title,
-                        'content' => $content,
-                        'user_id' => $this->userData['id']
-                    ]
-                ]);
 
+            
+            $data = ['multipart' => [
+                [
+                    'name' => 'title',
+                    'contents' => $title
+                ], [
+                    'name' => 'content',
+                    'contents' => $content
+                ], [
+                    'name' => 'user_id',
+                    'contents' => $this->userData['id']
+                ]
+            ]];
+
+            $imageNames = [];
+
+            if ($this->request->hasFiles()) {
+                foreach ($this->request->getUploadedFiles() as $file) {
+                    $name = rand();
+                    $fileName = sys_get_temp_dir() .'/'. $name;
+                    if (!$file->moveTo($fileName)) {
+                        throw new \Exception("The photo couldn't be uploaded");
+                    }
+                    $imageNames[] = $fileName;
+
+                    $data['multipart'][] =  [
+                        'Content-type' => 'multipart/form-data',
+                        'name' => $name,
+                        'contents' => fopen($fileName, 'r')
+                    ];
+                }
+            }
+            
+            try {
+                $response = $this->client->send($request, $data);
+                
                 if ($response->getStatusCode() == 200) {
                     $news = json_decode($response->getBody());
                     $this->response->redirect("/news/detail/{$news->id}");
                 }
             } catch (\Exception $e) {
                 $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
+            } finally {
+                foreach ($imageNames as $imageName) {
+                    unlink($imageName);
+                }
             }
         }
         $this->view->title = $title;
@@ -143,7 +173,7 @@ class MynewsController extends ControllerBase
             $content = $news->content;
         }
 
-        if($this->request->isPost()) {
+        if ($this->request->isPost()) {
             $request = new Request('PUT', $url);
             try {
                 $response = $this->client->send($request, [
@@ -188,7 +218,7 @@ class MynewsController extends ControllerBase
             }
         }
 
-        if($this->request->isPost()) {
+        if ($this->request->isPost()) {
             $request = new Request('DELETE', $url);
             try {
                 $response = $this->client->send($request);

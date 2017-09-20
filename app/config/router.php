@@ -67,9 +67,18 @@ $router->add('/login', [
     'controller' => 'account',
     'action' => 'login'
 ]);
+
 $router->add('/logout', [
     'controller' => 'account',
     'action' => 'logout'
+]);
+
+//Error route
+
+$router->addGet('/error/:params', [
+    'controller' => 'index',
+    'action' => 'error',
+    'message' => 1
 ]);
 
 $router->handle();

@@ -7,6 +7,9 @@
                             <div class='col-md-12'>
                                 <h1>{{ post.title }}</h1>
                                 <h5> Views Count: {{ post.views}}</h5>
+                                {% for photo in post.photos %}
+                                    <img src ="{{ imgUrl ~ photo.url }}" class="img-responsive img-thumbnail">
+                                {% endfor %}
                             </div>
                         </div>
                         <div class='col-md-5 text-right'>

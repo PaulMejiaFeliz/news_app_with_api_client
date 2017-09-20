@@ -4,7 +4,7 @@ use GuzzleHttp\Psr7\Request;
 use Phalcon\Tag;
 
 class CommentsController extends ControllerBase
-{       
+{
     public function initialize()
     {
         parent::initialize();
@@ -68,8 +68,8 @@ class CommentsController extends ControllerBase
         ]);
 
         if ($response->getStatusCode() != 200) {
-            throw new \Exception('Error editing comment');            
-        }       
+            throw new \Exception('Error editing comment');
+        }
 
         $this->response->redirect('/news/detail/' . $comment->news_id);
     }
@@ -98,6 +98,6 @@ class CommentsController extends ControllerBase
 
         $response = $this->client->send($request);
     
-        $this->response->redirect('/news/detail/' . $comment->news_id);        
+        $this->response->redirect('/news/detail/' . $comment->news_id);
     }
 }

@@ -19,10 +19,15 @@ class ControllerBase extends Controller
      */
     protected $userData;
 
+    /**
+     * Sets the api client, gets the current user data and sets the title of the web
+     *
+     * @return void
+     */
     public function initialize()
     {
-        Tag::setTitle(' - News App');        
-        $this->client = new \GuzzleHttp\Client(['base_uri' => 'http://api.newsapp/api/']);
+        Tag::setTitle(' - News App');
+        $this->client = new \GuzzleHttp\Client(['base_uri' => $this->config->application->api_url]);
         $this->userData = $this->session->get('user');
     }
 }

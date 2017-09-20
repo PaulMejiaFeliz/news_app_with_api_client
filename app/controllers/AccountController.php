@@ -1,8 +1,9 @@
 <?php
 
+use GuzzleHttp\Psr7\Request;
 use Newsapp\Models\Users;
 use Phalcon\Http\Response;
-use GuzzleHttp\Psr7\Request;
+use Phalcon\Tag;
 
 /**
  * Class used to manage accounts
@@ -84,7 +85,6 @@ class AccountController extends ControllerBase
             } else {
                 $request = new Request('POST', 'account/register');
                 try {
-                    
                     $response = $this->client->send($request, [
                         'form_params' => [
                             'email' => $email,

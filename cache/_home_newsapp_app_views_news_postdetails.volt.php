@@ -7,6 +7,9 @@
                             <div class='col-md-12'>
                                 <h1><?= $post->title ?></h1>
                                 <h5> Views Count: <?= $post->views ?></h5>
+                                <?php foreach ($post->photos as $photo) { ?>
+                                    <img src ="<?= $imgUrl . $photo->url ?>" class="img-responsive img-thumbnail">
+                                <?php } ?>
                             </div>
                         </div>
                         <div class='col-md-5 text-right'>
