@@ -11,28 +11,102 @@ use Phalcon\Tag;
 class AccountController extends ControllerBase
 {
     /**
+     * Displays the login view
+     *
+     * @method GET
+     * @url /account/login
+     */
+    public function loginGetAction()
+    {
+        $this->view->pick("account/login");
+        Tag::prependTitle('Login');
+        $this->view->email = '';
+    }
+
+    /**
      * If the credentials are right, lets the user login
      *
      * @method POST
      * @url /account/login
-     *
-     * @return Phalcon\Http\Response
      */
     public function loginAction()
     {
         Tag::prependTitle('Login');
         
-        $email = '';
-        if ($this->request->isPost()) {
-            $email = $this->request->getPost('email');
-            $password = $this->request->getPost('password');
+        $email = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
 
-            $request = new Request('POST', 'account/login');
+        $request = new Request('POST', 'account/login');
+        try {
+            $response = $this->client->send($request, [
+                'form_params' => [
+                    'email' => $email,
+                    'password' => $password
+                ]
+            ]);
+
+            if ($response->getStatusCode() == 200) {
+                $user = json_decode($response->getBody());
+                $this->session->set(
+                    'user',
+                    [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'lastName' => $user->lastName,
+                        'email' => $user->email
+                    ]
+                );
+            }
+
+            $this->response->redirect('/');
+        } catch (\Exception $e) {
+            $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
+        }
+        $this->view->email = $email;
+    }
+
+    /**
+     * Displays the register view
+     *
+     * @method GET
+     * @url /account/register
+     */
+    public function registerGetAction()
+    {
+        $this->view->pick("account/register");
+        Tag::prependTitle('Register');
+        $this->view->name = '';
+        $this->view->lastName = '';
+        $this->view->email = '';
+    }
+
+    /**
+     * If the data fulfill the rules registers a new user
+     *
+     * @method POST
+     * @url /account/register
+     */
+    public function registerAction()
+    {
+        Tag::prependTitle('Register');
+        $name = $this->request->getPost('name');
+        $lastName = $this->request->getPost('lastName');
+        $email = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
+        if ($password !== $this->request->getPost('confirmPassword')) {
+            $error = new stdClass();
+            $error->field = 'confirm_password';
+            $error->message = "The confirm password doesn't match.";
+            $this->view->errors = [$error];
+        } else {
+            $request = new Request('POST', 'account/register');
             try {
                 $response = $this->client->send($request, [
                     'form_params' => [
                         'email' => $email,
-                        'password' => $password
+                        'password' => $password,
+                        'name' => $name,
+                        'lastName' => $lastName
                     ]
                 ]);
 
@@ -54,65 +128,6 @@ class AccountController extends ControllerBase
                 $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
             }
         }
-        $this->view->email = $email;
-    }
-
-    /**
-     * If the data fulfill the rules registers a new user
-     *
-     * @method POST
-     * @url /account/register
-     *
-     * @return Phalcon\Http\Response
-     */
-    public function registerAction()
-    {
-        Tag::prependTitle('Register');
-        
-        $name = '';
-        $lastName = '';
-        $email = '';
-        if ($this->request->isPost()) {
-            $name = $this->request->getPost('name');
-            $lastName = $this->request->getPost('lastName');
-            $email = $this->request->getPost('email');
-            $password = $this->request->getPost('password');
-            if ($password !== $this->request->getPost('confirmPassword')) {
-                $error = new stdClass();
-                $error->field = 'confirm_password';
-                $error->message = "The confirm password doesn't match.";
-                $this->view->errors = [$error];
-            } else {
-                $request = new Request('POST', 'account/register');
-                try {
-                    $response = $this->client->send($request, [
-                        'form_params' => [
-                            'email' => $email,
-                            'password' => $password,
-                            'name' => $name,
-                            'lastName' => $lastName
-                        ]
-                    ]);
-
-                    if ($response->getStatusCode() == 200) {
-                        $user = json_decode($response->getBody());
-                        $this->session->set(
-                            'user',
-                            [
-                                'id' => $user->id,
-                                'name' => $user->name,
-                                'lastName' => $user->lastName,
-                                'email' => $user->email
-                            ]
-                        );
-                    }
-
-                    $this->response->redirect('/');
-                } catch (\Exception $e) {
-                    $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
-                }
-            }
-        }
         $this->view->name = $name;
         $this->view->lastName = $lastName;
         $this->view->email = $email;
@@ -123,8 +138,6 @@ class AccountController extends ControllerBase
      *
      * @method GET
      * @url /account/logout
-     *
-     * @return Phalcon\Http\Response
      */
     public function logoutAction()
     {

@@ -29,7 +29,8 @@ class NewsController extends ControllerBase
     /**
      * Displays the home view
      *
-     * @return void
+     * @method GET
+     * @url /
      */
     public function indexAction()
     {
@@ -74,8 +75,8 @@ class NewsController extends ControllerBase
     /**
      * Displays a view with the details of a post
      *
-     * @param int $id Id of the post
-     * @return void
+     * @method GET
+     * @url /news/detail/5
      */
     public function postDetailsAction(int $id)
     {

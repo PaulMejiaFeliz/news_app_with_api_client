@@ -46,6 +46,12 @@ class MynewsController extends ControllerBase
         }
     }
 
+    /**
+     * Displays a view with the posts of the current user
+     *
+     * @method GET
+     * @url /myNews
+     */
     public function indexAction()
     {
         Tag::prependTitle('My Posts');
@@ -87,64 +93,79 @@ class MynewsController extends ControllerBase
         $this->view->searchValue = $searchValue;
     }
 
+    /**
+     * Displays the add post view
+     *
+     * @method GET
+     * @url /news/add
+     */
+    public function addPostGetAction()
+    {
+        $this->view->pick("myNews/addPost");
+        Tag::prependTitle('Add Post');
+        $this->view->title = '';
+        $this->view->content = '';
+    }
+
+    /**
+     * Creates a new post
+     *
+     * @method POST
+     * @url /news/add
+     */
     public function addPostAction()
     {
         Tag::prependTitle('Add Post');
 
-        $title = '';
-        $content = '';
-        if ($this->request->isPost()) {
-            $title = $this->request->getPost('title');
-            $content = $this->request->getPost('content');
+        $title = $this->request->getPost('title');
+        $content = $this->request->getPost('content');
 
-            $request = new Request('POST', 'news');
+        $request = new Request('POST', 'news');
+        
+        $data = ['multipart' => [
+            [
+                'name' => 'title',
+                'contents' => $title
+            ], [
+                'name' => 'content',
+                'contents' => $content
+            ], [
+                'name' => 'user_id',
+                'contents' => $this->userData['id']
+            ]
+        ]];
 
-            
-            $data = ['multipart' => [
-                [
-                    'name' => 'title',
-                    'contents' => $title
-                ], [
-                    'name' => 'content',
-                    'contents' => $content
-                ], [
-                    'name' => 'user_id',
-                    'contents' => $this->userData['id']
-                ]
-            ]];
+        $imageNames = [];
 
-            $imageNames = [];
-
-            if ($this->request->hasFiles()) {
-                foreach ($this->request->getUploadedFiles() as $file) {
-                    $name = rand();
-                    $fileName = sys_get_temp_dir() .'/'. $name;
-                    if (!$file->moveTo($fileName)) {
-                        throw new \Exception("The photo couldn't be uploaded");
-                    }
-                    $imageNames[] = $fileName;
-
-                    $data['multipart'][] =  [
-                        'Content-type' => 'multipart/form-data',
-                        'name' => $name,
-                        'contents' => fopen($fileName, 'r')
-                    ];
+        if ($this->request->hasFiles()) {
+            foreach ($this->request->getUploadedFiles() as $file) {
+                $name = rand();
+                $fileName = sys_get_temp_dir() .'/'. $name;
+                if (!$file->moveTo($fileName)) {
+                    throw new \Exception("The photo couldn't be uploaded");
                 }
+                $imageNames[] = $fileName;
+
+                $data['multipart'][] =  [
+                    'Content-type' => 'multipart/form-data',
+                    'name' => $name,
+                    'contents' => fopen($fileName, 'r')
+                ];
             }
+        }
+        
+        try {
+            $response = $this->client->send($request, $data);
             
-            try {
-                $response = $this->client->send($request, $data);
-                
-                if ($response->getStatusCode() == 200) {
-                    $news = json_decode($response->getBody());
-                    $this->response->redirect("/news/detail/{$news->id}");
-                }
-            } catch (\Exception $e) {
-                $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
-            } finally {
-                foreach ($imageNames as $imageName) {
-                    unlink($imageName);
-                }
+            if ($response->getStatusCode() == 200) {
+                $news = json_decode($response->getBody());
+                $this->response->redirect("/news/detail/{$news->id}");
+            }
+        } catch (\Exception $e) {
+            $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
+        } finally {
+            foreach ($imageNames as $imageName) {
+                unlink($imageName);
             }
         }
         $this->view->title = $title;
@@ -152,16 +173,19 @@ class MynewsController extends ControllerBase
     }
 
     /**
-     * Updates the given information of an existing post
+     * Displays the edit post view
+     *
+     * @method GET
+     * @url /news/edit/id
      */
-    public function editPostAction(int $id)
+    public function editPostGetAction(int $id)
     {
+        $this->view->pick("myNews/editPost");
         Tag::prependTitle('Edit Post');
 
         $url = "news/{$id}";
 
-        $title = '';
-        $content = '';
+        $news;
 
         $response = $this->client->request('GET', $url);
         if ($response->getStatusCode() == 200) {
@@ -172,29 +196,47 @@ class MynewsController extends ControllerBase
             $title = $news->title;
             $content = $news->content;
         }
-
-        if ($this->request->isPost()) {
-            $request = new Request('PUT', $url);
-            try {
-                $response = $this->client->send($request, [
-                    'form_params' => [
-                        'title' => $this->request->getPost('title'),
-                        'content' => $this->request->getPost('content')
-                    ]
-                ]);
-
-                if ($response->getStatusCode() == 200) {
-                    $news = json_decode($response->getBody());
-                    $this->response->redirect("/news/detail/{$news->id}");
-                }
-            } catch (\Exception $e) {
-                $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
-            }
-        }
         
         $this->view->id = $id;
         $this->view->title = $news->title;
         $this->view->content = $news->content;
+    }
+
+    /**
+     * Edits a post
+     *
+     * @method POST
+     * @url /news/edit/id
+     */
+    public function editPostAction(int $id)
+    {
+        Tag::prependTitle('Edit Post');
+
+        $url = "news/{$id}";
+
+        $title = $this->request->getPost('title');
+        $content = $this->request->getPost('content');
+
+        $request = new Request('PUT', $url);
+        try {
+            $response = $this->client->send($request, [
+                'form_params' => [
+                    'title' => $title,
+                    'content' => $content
+                ]
+            ]);
+
+            if ($response->getStatusCode() == 200) {
+                $news = json_decode($response->getBody());
+                $this->response->redirect("/news/detail/{$news->id}");
+            }
+        } catch (\Exception $e) {
+            $this->view->errors = json_decode($e->getResponse()->getBody())->errors;
+        }
+    
+        $this->view->id = $id;
+        $this->view->title = $title;
+        $this->view->content = $content;
     }
 
     public function deletePostAction()

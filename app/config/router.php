@@ -6,28 +6,39 @@ $router = $di->getRouter();
 
 //News Routes
 
-$router->add('/', [
+$router->addGet('/', [
     'controller' => 'news',
     'action' => 'index'
 ]);
 
-$router->add('/myNews', [
+$router->addGet('/myNews', [
     'controller' => 'myNews',
     'action' => 'index'
 ]);
 
-$router->add('/news/detail/:int', [
+$router->addGet('/news/detail/:int', [
     'controller' => 'news',
     'action' => 'postDetails',
     'id' => 1
 ]);
 
-$router->add('/news/add', [
+$router->addGet('/news/add', [
+    'controller' => 'myNews',
+    'action' => 'addPostGet'
+]);
+
+$router->addPost('/news/add', [
     'controller' => 'myNews',
     'action' => 'addPost'
 ]);
 
-$router->add('/news/edit/:int', [
+$router->addGet('/news/edit/:int', [
+    'controller' => 'myNews',
+    'action' => 'editPostGet',
+    'id' => 1
+]);
+
+$router->addPost('/news/edit/:int', [
     'controller' => 'myNews',
     'action' => 'editPost',
     'id' => 1
@@ -58,17 +69,27 @@ $router->addPost('/comments/delete', [
 
 //Account Routes
 
-$router->add('/register', [
+$router->addGet('/register', [
+    'controller' => 'account',
+    'action' => 'registerGet'
+]);
+
+$router->addPost('/register', [
     'controller' => 'account',
     'action' => 'register'
 ]);
 
-$router->add('/login', [
+$router->addGet('/login', [
+    'controller' => 'account',
+    'action' => 'loginGet'
+]);
+
+$router->addPost('/login', [
     'controller' => 'account',
     'action' => 'login'
 ]);
 
-$router->add('/logout', [
+$router->addGet('/logout', [
     'controller' => 'account',
     'action' => 'logout'
 ]);
